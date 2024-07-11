@@ -1,21 +1,16 @@
+import { StyleSheet, Text, View } from 'react-native'
+import { Slot, Stack } from 'expo-router' 
+// Slot renders the current child's route, so index.js is rendere
+// Stack allows us to declare each of our individual screens
 
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+// code snippet rnfes, react native functional export component with styles
 
-export default function App() {
+const RootLayout = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+    </Stack>
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default RootLayout;
