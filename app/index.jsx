@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { Image, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // Home page or Route: '/'
 import { Redirect, router } from 'expo-router'
@@ -8,8 +8,6 @@ import CustomButton from '../components/CustomButton';
 
 
 export default function App() {
-
-  const {width, height} = useWindowDimensions();
 
   return (
     // SafeAreaView: when you have the most outside view that should be a safeareaview
