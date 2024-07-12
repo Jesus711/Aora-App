@@ -30,6 +30,9 @@ module.exports = {
         pextrabold: ["Poppins-ExtraBold", "sans-serif"],
         pblack: ["Poppins-Black", "sans-serif"],
       },
+      screens: {
+        'tall': { 'raw': '(min-height: 768px)' },
+      }
     },
   },
   plugins: [],
