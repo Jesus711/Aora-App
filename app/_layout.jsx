@@ -9,6 +9,9 @@ import { useEffect } from 'react';
 // Creating directory/folder with parentheses (name), the directory is considered a route group
 // Allowing to add additional pages/screens within it  with a special layout
 
+import GlobalProvider from "../context/GlobalProvider";
+// Wrap around entire app / layout to give access to all the values passed to GlobalContenxt.provider
+
 // Prevents the splash screen from auto hiding before the asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -43,14 +46,16 @@ const RootLayout = () => {
 
 
   return (
-    <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        {/* <Stack.Screen name="/search/[query]" options={{ headerShown: false }} /> */}
+    <GlobalProvider>
+      <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          {/* <Stack.Screen name="/search/[query]" options={{ headerShown: false }} /> */}
 
 
-    </Stack>
+      </Stack>
+    </GlobalProvider>
   )
 }
 
