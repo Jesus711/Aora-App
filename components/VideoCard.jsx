@@ -1,6 +1,7 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { icons } from '../constants'
+import { Video, ResizeMode } from 'expo-av'
 
 const VideoCard = ({ video: { title, thumbnail, video, creator: { username, avatar }} }) => {
 
@@ -38,7 +39,21 @@ const VideoCard = ({ video: { title, thumbnail, video, creator: { username, avat
             </View>
 
             {play ? (
-                <Text className="text-white text-2xl">Playing</Text>
+                <Video
+                // Vimeo videos given in the dummy data are not working. It may be due not being able to access the video
+                // or since the url do not point to the video directly with the extension it does not work.
+                // May need to create / get an access token and fetch the video url directly
+                source={{ uri: "https://www.w3schools.com/html/mov_bbb.mp4" }} // item.video
+                className="w-full h-60 rounded-xl mt-3 bg-white/10"
+                resizeMode={ResizeMode.CONTAIN}
+                useNativeControls
+                shouldPlay
+                onPlaybackStatusUpdate={(status) => {
+                    if (status.didJustFinish) {
+                    setPlay(false);
+                    }
+                }}
+                />
             ) : (
                 <TouchableOpacity 
                     activeOpacity={0.7}
