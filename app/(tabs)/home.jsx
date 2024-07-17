@@ -8,6 +8,7 @@ import EmptyState from '../../components/EmptyState';
 import { getAllPosts, getLatestPosts } from '../../lib/appwrite';
 import useAppwrite from '../../lib/useAppwrite';
 import VideoCard from '../../components/VideoCard';
+import { StatusBar } from 'expo-status-bar';
 
 const Home = () => {
 
@@ -32,6 +33,9 @@ const Home = () => {
 
   return (
     <SafeAreaView className="bg-primary h-full">
+
+      {/* Added the status bar due to Safeareview h-full overwritting the status bar settins in the index.js file un app/ */}
+      <StatusBar style={"light"} /> 
 
       {/* Everything wrapped in a flatlist instead of a scrollview due to scrollview only allowing vert or horizontal
       cannot handle/support both */}
