@@ -1,21 +1,35 @@
-import { View, Text, FlatList, Image, RefreshControl } from 'react-native';
-import { useState } from 'react';
+import { View, Text, FlatList, Image, RefreshControl, Alert } from 'react-native';
+import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { images } from '../../constants';
 import SearchInput from '../../components/SearchInput';
 import Trending from '../../components/Trending';
 import EmptyState from '../../components/EmptyState';
+import { getAllPosts, getLatestPosts } from '../../lib/appwrite';
+import useAppwrite from '../../lib/useAppwrite';
+import VideoCard from '../../components/VideoCard';
 
 const Home = () => {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    // recall videos if any new videos appeared
+  // retrieves the data and renames it to posts using the getAllPosts
+  // retrieve the refetch function
+  const { data: posts, refetch } = useAppwrite(getAllPosts);
 
+  const { data: latestsPosts } = useAppwrite(getLatestPosts);
+
+  const onRefresh = async () => {
+    // On Refresh set the state refreshing to true
+    // Call and wait until the data is refetched
+    setRefreshing(true);
+    await refetch();
+
+    // When data has been refetched, setRefressing to false
     setRefreshing(false);
   }
+
+  console.log(posts);
 
 
   return (
@@ -24,10 +38,10 @@ const Home = () => {
       {/* Everything wrapped in a flatlist instead of a scrollview due to scrollview only allowing vert or horizontal
       cannot handle/support both */}
       <FlatList 
-        data={[]} //{ id: 1 }, { id: 2 }, { id: 3 }
+        data={posts}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <Text className="text-3xl text-white" key={item.id}>{item.id}</Text>
+          <VideoCard key={item.title + item.id} video={item} />
         )}
         ListHeaderComponent={() => (
           // Will appear about the list as a header
@@ -52,7 +66,7 @@ const Home = () => {
             <View className="w-full flex-1 pt-5 pb-8">
               <Text className="font-pregular text-gray-100 text-lg">Latest Videos</Text>
 
-              <Trending posts={[{ id:1 }, { id:2 }, { id:3 }] ?? [] }  />
+              <Trending posts={latestsPosts}  />
               {/* ?? meaning if the posts do not exists return an empty array */}
             </View>
           </View>
