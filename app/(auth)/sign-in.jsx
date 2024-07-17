@@ -19,7 +19,7 @@ const SignIn = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const {setUser, setIsLoggedIn} = useGlobalContext();
+  const { setUser, setIsLoggedIn } = useGlobalContext();
 
   const submit = async () => {
 
@@ -39,7 +39,7 @@ const SignIn = () => {
       setUser(result);
       setIsLoggedIn(true)
 
-      Alert.alert("Success", "User signed in successfully");
+      //Alert.alert("Success", "User signed in successfully");
       
       // If successful, navigate to the home page
       router.replace("/home");
