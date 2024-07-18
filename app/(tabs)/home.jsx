@@ -20,13 +20,14 @@ const Home = () => {
   // retrieve the refetch function
   const { data: posts, refetch } = useAppwrite(getAllPosts);
 
-  const { data: latestsPosts } = useAppwrite(getLatestPosts);
+  const { data: latestsPosts, refetch: lastestRefetch } = useAppwrite(getLatestPosts);
 
   const onRefresh = async () => {
     // On Refresh set the state refreshing to true
     // Call and wait until the data is refetched
     setRefreshing(true);
     await refetch();
+    await lastestRefetch();
 
     // When data has been refetched, setRefressing to false
     setRefreshing(false);
