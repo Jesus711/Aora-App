@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ImageBackground, Image } from 'react-native';
+import { FlatList, TouchableOpacity, ImageBackground, Image } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { icons } from '../constants';
 import { Video, ResizeMode } from 'expo-av';
@@ -40,7 +40,7 @@ const TrendingItem = ({ activeItem, item }) => {
         // Vimeo videos given in the dummy data are not working. It may be due not being able to access the video
         // or since the url do not point to the video directly with the extension it does not work.
         // May need to create / get an access token and fetch the video url directly
-          source={{ uri: "https://www.w3schools.com/html/mov_bbb.mp4" }} // item.video
+          source={{ uri: item.video }} // item.video
           className="w-52 h-72 rounded-[33px] mt-3 bg-white/10"
           resizeMode={ResizeMode.CONTAIN}
           useNativeControls
