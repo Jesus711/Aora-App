@@ -66,7 +66,7 @@ const Home = () => {
               </View>
             </View>
 
-            <SearchInput />
+            <SearchInput placeholder="Search for a video topic" />
 
             <View className="w-full flex-1 pt-5 pb-8">
               <Text className="font-pregular text-gray-100 text-lg">Latest Videos</Text>
