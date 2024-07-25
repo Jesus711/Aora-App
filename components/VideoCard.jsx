@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native'
+import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback, Modal } from 'react-native'
 import React, { useState } from 'react'
 import { icons } from '../constants'
 import { Video, ResizeMode } from 'expo-av'
@@ -6,11 +6,12 @@ import { Video, ResizeMode } from 'expo-av'
 const VideoCard = ({ video: { title, thumbnail, video, creator: { username, avatar }} }) => {
 
     const [play, setPlay] = useState(false);
+    const [showMenu, setShowMenu] = useState(false)
 
 
     return (
         <View className="flex-col items-center px-4 mb-14">
-            <View className="flex-row gap-3 items-start">
+            <View className="flex-row gap-3 items-start relative">
 
                 {/* User's Avatar image/initials, video title, and username*/}
                 <View className="justify-center items-center flex-row flex-1">
@@ -31,11 +32,26 @@ const VideoCard = ({ video: { title, thumbnail, video, creator: { username, avat
                 </View>
                 
                 {/* 3 dot menu */}
-                <View className="pt-2">
-                    <Image source={icons.menu} className="w-5 h-5" 
+                <TouchableOpacity className="pt-2" onPress={() => setShowMenu(!showMenu)}>
+                    <Image source={icons.menu} className="w-3 h-3" 
                         resizeMode='contain'
                     />
-                </View>
+                </TouchableOpacity>
+
+
+                {showMenu && (
+                    <View className="z-10 p-4 absolute top-6 right-0 w-[150px] justify-center items-center bg-slate-600 rounded-xl">
+                        <TouchableOpacity className="flex-row justify-center gap-2 w-full"
+                            onPress={() => {handleSaveVideo()}}
+                        >
+                            <Image source={icons.bookmark} className="w-5 h-5" resizeMode='contain' />
+                            <Text className="text-white font-psemibold text-sm">Save Video</Text>
+                        </TouchableOpacity>
+                    </View>                
+                )}
+
+
+
             </View>
 
             {play ? (
@@ -50,7 +66,7 @@ const VideoCard = ({ video: { title, thumbnail, video, creator: { username, avat
                 shouldPlay
                 onPlaybackStatusUpdate={(status) => {
                     if (status.didJustFinish) {
-                    setPlay(false);
+                        setPlay(false);
                     }
                 }}
                 />
