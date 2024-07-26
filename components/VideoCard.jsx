@@ -1,12 +1,53 @@
-import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback, Modal } from 'react-native'
+import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback, Modal, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { icons } from '../constants'
 import { Video, ResizeMode } from 'expo-av'
+import { checkSavedVideo, removeSavedVideo, saveVideo } from '../lib/appwrite'
+import { useGlobalContext } from '../context/GlobalProvider'
+import useAppwrite from '../lib/useAppwrite'
 
-const VideoCard = ({ video: { title, thumbnail, video, creator: { username, avatar }} }) => {
+const VideoCard = ({ listRefetch, video: { title, thumbnail, video, $id: videoID, creator: { username, avatar }} }) => {
 
     const [play, setPlay] = useState(false);
-    const [showMenu, setShowMenu] = useState(false)
+    const [showMenu, setShowMenu] = useState(false);
+    const { user } = useGlobalContext();
+
+    const { data: isSavedVideo, refetch } = useAppwrite(() => checkSavedVideo(user?.$id, videoID))
+
+    const handleSaveVideo = async () => {
+
+        try {
+            console.log("Saving the video")
+
+            const response = await saveVideo(user?.$id, videoID);
+
+            if(response === 1){
+                Alert.alert("Video has already been saved.")
+            }
+            else {
+                refetch();
+                listRefetch();
+            }
+    
+        } catch (error) {
+            console.log(error.message)
+        }
+
+    }
+
+    const handleRemoveSavedVideo = async () => {
+        try {
+            const response = await removeSavedVideo(user?.$id, videoID)
+
+            console.log(response)
+            refetch();
+            listRefetch();
+
+        } catch (error) {
+            Alert.alert("Error", "Video may have already been removed")
+        }
+    }
+
 
 
     return (
@@ -41,12 +82,23 @@ const VideoCard = ({ video: { title, thumbnail, video, creator: { username, avat
 
                 {showMenu && (
                     <View className="z-10 p-4 absolute top-6 right-0 w-[150px] justify-center items-center bg-slate-600 rounded-xl">
-                        <TouchableOpacity className="flex-row justify-center gap-2 w-full"
-                            onPress={() => {handleSaveVideo()}}
-                        >
-                            <Image source={icons.bookmark} className="w-5 h-5" resizeMode='contain' />
-                            <Text className="text-white font-psemibold text-sm">Save Video</Text>
-                        </TouchableOpacity>
+                        
+                        {isSavedVideo ? (
+                            <TouchableOpacity className="flex-row justify-center gap-2 w-full"
+                                onPress={handleRemoveSavedVideo}
+                            >
+                                <Image source={icons.bookmark} className="w-5 h-5" resizeMode='contain' />
+                                <Text className="text-white font-psemibold text-sm">Unsave Video</Text>
+                            </TouchableOpacity>
+                        ) : (
+                            <TouchableOpacity className="flex-row justify-center gap-2 w-full"
+                                onPress={handleSaveVideo}
+                            >
+                                <Image source={icons.bookmark} className="w-5 h-5" resizeMode='contain' />
+                                <Text className="text-white font-psemibold text-sm">Save Video</Text>
+                            </TouchableOpacity>
+                        )}
+
                     </View>                
                 )}
 

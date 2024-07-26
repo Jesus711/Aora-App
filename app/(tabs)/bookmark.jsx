@@ -1,13 +1,11 @@
-import { View, Text, FlatList, Image } from 'react-native';
+import { View, Text, FlatList, Image, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchInput from '../../components/SearchInput';
 import { StatusBar } from 'expo-status-bar';
 import VideoCard from '../../components/VideoCard';
 import { useState, useEffect } from 'react';
-import { getAllPosts, getUserSavedVideos, searchPosts } from '../../lib/appwrite';
-import { useLocalSearchParams } from 'expo-router';
+import { getUserSavedVideos } from '../../lib/appwrite';
 import useAppwrite from '../../lib/useAppwrite';
-import EmptyState from '../../components/EmptyState';
 import { images } from '../../constants';
 import { useGlobalContext } from '../../context/GlobalProvider';
 
@@ -16,15 +14,23 @@ import { useGlobalContext } from '../../context/GlobalProvider';
 const Bookmark = () => {
 
   const { user } = useGlobalContext();
-  //const [searchPosts, setSearchPosts] = useState("")
-  //const { data: posts, refetch } = useAppwrite(() => getUserSavedVideos(user));
-  const posts = []
+  const [searchPosts, setSearchPosts] = useState("")
+  const { data: posts, refetch } = useAppwrite(() => getUserSavedVideos(user?.$id));
+  const [refreshing, setRefreshing] = useState(false)
 
-
-  // Call refetch whenever the query changes
+  //Call refetch whenever the query changes
   useEffect(() => {
-    //refetch();
+    refetch();
   }, [])
+
+  const onRefresh = async () => {
+    // On Refresh set the state refreshing to true
+    // Call and wait until the data is refetched
+    setRefreshing(true);
+    await refetch();
+    // When data has been refetched, setRefressing to false
+    setRefreshing(false);
+  }
 
   return (
     <SafeAreaView className="bg-primary h-full">
@@ -37,7 +43,7 @@ const Bookmark = () => {
         data={posts}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <VideoCard key={item.title + item.id} video={item} />
+          <VideoCard key={item.title + item.id} video={item} listRefetch={refetch} />
         )}
         ListHeaderComponent={() => (
           // Will appear about the list as a header
@@ -60,6 +66,7 @@ const Bookmark = () => {
             <Text className="font-pmedium text-sm text-gray-100">Go to the Home Tab to save your first video</Text>
           </View>
         )}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
 
     </SafeAreaView>
