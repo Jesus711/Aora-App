@@ -1,19 +1,29 @@
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, Image } from 'react-native';
 import { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchInput from '../../components/SearchInput';
 import EmptyState from '../../components/EmptyState';
-import { searchPosts } from '../../lib/appwrite';
+import { searchPosts, searchSavedPosts } from '../../lib/appwrite';
 import useAppwrite from '../../lib/useAppwrite';
 import VideoCard from '../../components/VideoCard';
 import { StatusBar } from 'expo-status-bar';
 import { useLocalSearchParams } from 'expo-router';
+import { useGlobalContext } from '../../context/GlobalProvider';
+import { images } from '../../constants';
 
 const Search = () => {
 
-  const { query } = useLocalSearchParams();
-  const { data: posts, refetch } = useAppwrite(() => searchPosts(query));
+  const { user } = useGlobalContext();
+  const { query, type } = useLocalSearchParams();
+  const { data: posts, refetch } = useAppwrite(() => handleSearch(type, user?.$id, query));
 
+  const handleSearch = async (type, userID, query) => {
+    if( type === "saved" ) {
+      return searchSavedPosts(userID, query)
+    } else {
+      return searchPosts(query)
+    }
+  }
 
   // Call refetch whenever the query changes
   useEffect(() => {
@@ -32,7 +42,7 @@ const Search = () => {
         data={posts}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <VideoCard key={item.title + item.id} video={item} />
+          <VideoCard key={item.title + item.id} video={item} listRefetch={refetch} />
         )}
         ListHeaderComponent={() => (
           // Will appear about the list as a header
@@ -46,10 +56,20 @@ const Search = () => {
           </View>
         )}
         // Specifies what happens when the list is empty
-        ListEmptyComponent={() => (
-          <EmptyState title="No Videos Found" 
-            subtitle="No videos found for this search query"
-          />
+        ListEmptyComponent={() => 
+          ( type === "saved" ? (
+              <View className="justify-center items-center">
+                <Image source={images.empty} 
+                  className="w-[270px] h-[215px]"
+                  resizeMode='contain'
+                />
+                <Text className="text-xl text-center font-psemibold text-white mt-2">No Saved Videos Found</Text>
+                <Text className="font-pmedium text-sm text-gray-100">No video titled '{query}' found</Text>
+            </View>
+          ) :
+            <EmptyState title="No Videos Found" 
+              subtitle="No videos found for this search query"
+            />
         )}
       />
 

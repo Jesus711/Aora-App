@@ -9,16 +9,13 @@ import useAppwrite from '../../lib/useAppwrite';
 import { images } from '../../constants';
 import { useGlobalContext } from '../../context/GlobalProvider';
 
-// TODO: Create the Bookmark / Saved Videos Page Tab. Not included in tutorial video
-// Rewatch video: Hint: What has been implemented in the other pages, can be used to implement this.
+
 const Bookmark = () => {
 
   const { user } = useGlobalContext();
-  const [searchPosts, setSearchPosts] = useState("")
   const { data: posts, refetch } = useAppwrite(() => getUserSavedVideos(user?.$id));
   const [refreshing, setRefreshing] = useState(false)
 
-  //Call refetch whenever the query changes
   useEffect(() => {
     refetch();
   }, [])
@@ -51,7 +48,7 @@ const Bookmark = () => {
             <Text className="text-2xl text-white font-psemibold">Saved Videos</Text>
               
               <View className="mt-6 mb-8">
-                <SearchInput initialQuery={searchPosts} placeholder="Search your saved videos" />
+                <SearchInput placeholder="Search your saved videos" refetch={refetch} />
               </View>
           </View>
         )}

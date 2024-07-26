@@ -4,7 +4,7 @@ import { router, usePathname } from 'expo-router';
 import { useState } from 'react';
 
 
-const SearchInput = ({ initialQuery, placeholder }) => {
+const SearchInput = ({ initialQuery, placeholder, refetch }) => {
 
   const pathname = usePathname();
 
@@ -33,10 +33,12 @@ const SearchInput = ({ initialQuery, placeholder }) => {
             if(pathname.startsWith("/search")){
               router.setParams({ query });
               
+            } else if (pathname.startsWith("/bookmark")) {
+              router.push({pathname: `/search/${query}`, params: {query: query, type: "saved", refetchList: refetch} })
             } else {
               // else if user searched something outside of the search screen/view, route them to the 
               // search screen with their search in the query
-              router.push(`/search/${query}`);
+              router.push({pathname: `/search/${query}`, params: {query: query, type: "home"} })
             }
 
           }}
