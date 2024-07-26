@@ -1,5 +1,5 @@
 import { View, Text, FlatList, Image, RefreshControl, Alert } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { images } from '../../constants';
 import SearchInput from '../../components/SearchInput';
@@ -19,7 +19,6 @@ const Home = () => {
   // retrieves the data and renames it to posts using the getAllPosts
   // retrieve the refetch function
   const { data: posts, refetch } = useAppwrite(getAllPosts);
-
   const { data: latestsPosts, refetch: lastestRefetch } = useAppwrite(getLatestPosts);
 
   const onRefresh = async () => {
@@ -46,7 +45,7 @@ const Home = () => {
         data={posts}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <VideoCard key={item.title + item.id} video={item} />
+          <VideoCard key={item.title + item.id} video={item} homeRefresh={refreshing} />
         )}
         ListHeaderComponent={() => (
           // Will appear about the list as a header

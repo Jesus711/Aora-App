@@ -1,12 +1,12 @@
-import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback, Modal, Alert } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, Image, TouchableOpacity, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { icons } from '../constants'
 import { Video, ResizeMode } from 'expo-av'
 import { checkSavedVideo, removeSavedVideo, saveVideo } from '../lib/appwrite'
 import { useGlobalContext } from '../context/GlobalProvider'
 import useAppwrite from '../lib/useAppwrite'
 
-const VideoCard = ({ listRefetch, video: { title, thumbnail, video, $id: videoID, creator: { username, avatar }} }) => {
+const VideoCard = ({ listRefetch, homeRefresh, video: { title, thumbnail, video, $id: videoID, creator: { username, avatar }} }) => {
 
     const [play, setPlay] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
@@ -25,7 +25,7 @@ const VideoCard = ({ listRefetch, video: { title, thumbnail, video, $id: videoID
             }
             else {
                 refetch();
-                listRefetch();
+                listRefetch?.();
             }
     
         } catch (error) {
@@ -39,12 +39,18 @@ const VideoCard = ({ listRefetch, video: { title, thumbnail, video, $id: videoID
             const response = await removeSavedVideo(user?.$id, videoID)
 
             refetch();
-            listRefetch();
+            listRefetch?.();
 
         } catch (error) {
-            Alert.alert("Error", "Video may have already been removed")
+            Alert.alert("Error", "Video may have already been removed. Try refreshing")
+            //refetch(); Fixes the unsaved error, error pops up trying to unsave an already unsaved video, will refetch saved List after error appears
         }
     }
+
+    // Has savedVideo list to refetch when the home page refreshes to update if any saved videos were removed from the bookmark tab
+    useEffect(() => {
+        refetch();
+    }, [homeRefresh])
 
 
 
