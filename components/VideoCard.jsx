@@ -17,7 +17,6 @@ const VideoCard = ({ listRefetch, video: { title, thumbnail, video, $id: videoID
     const handleSaveVideo = async () => {
 
         try {
-            console.log("Saving the video")
 
             const response = await saveVideo(user?.$id, videoID);
 
@@ -30,7 +29,7 @@ const VideoCard = ({ listRefetch, video: { title, thumbnail, video, $id: videoID
             }
     
         } catch (error) {
-            console.log(error.message)
+            Alert.alert("Error", error.message)
         }
 
     }
@@ -39,7 +38,6 @@ const VideoCard = ({ listRefetch, video: { title, thumbnail, video, $id: videoID
         try {
             const response = await removeSavedVideo(user?.$id, videoID)
 
-            console.log(response)
             refetch();
             listRefetch();
 
