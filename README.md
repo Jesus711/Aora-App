@@ -1,6 +1,6 @@
 # Introduction to React Native and Expo-Go mobile development
 
-## Created a full-stack app, Aora. A video sharing and video application.
+## Created a full-stack app, Aora. A video sharing and video playing application.
 - Able to create account
 - Automatic Login after closing app
 - Able to upload video
