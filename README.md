@@ -1,6 +1,7 @@
 # Introduction to React Native and Expo-Go mobile development
 App Demo Video:\
 [![Demo link](https://img.youtube.com/vi/k3fJy8MskSk/hqdefault.jpg)](https://www.youtube.com/watch?v=k3fJy8MskSk)
+[Demo link](https://www.youtube.com/watch?v=k3fJy8MskSk)
 
 ## Created a full-stack app, Aora. A video sharing and video playing application.
 - Able to create account
