@@ -1,5 +1,5 @@
-import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
-import { useEffect } from 'react';
+import { View, Text, FlatList, Image, TouchableOpacity, RefreshControl } from 'react-native';
+import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import EmptyState from '../../components/EmptyState';
 import { getUserPosts, signOut } from '../../lib/appwrite';
@@ -16,10 +16,17 @@ const Profile = () => {
   const { user, setUser, setIsLoggedIn } = useGlobalContext();
   const { data: posts, refetch } = useAppwrite(() => getUserPosts(user?.$id));
 
-  // Call refetch whenever the query changes
-  useEffect(() => {
-    refetch();
-  }, [])
+  const [refreshing, setRefreshing] = useState(false)
+
+  const onRefresh = async () => {
+    // On Refresh set the state refreshing to true
+    // Call and wait until the data is refetched
+    setRefreshing(true);
+    await refetch();
+
+    // When data has been refetched, setRefressing to false
+    setRefreshing(false);
+  }
 
   const logout = async () => {
     await signOut(); // Deletes the user's session
@@ -42,7 +49,7 @@ const Profile = () => {
         data={posts}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <VideoCard key={item.title + item.id} video={item} />
+          <VideoCard key={item.title + item.id} video={item} refresh={refreshing} />
         )}
         ListHeaderComponent={() => (
           // Will appear about the list as a header
@@ -94,9 +101,10 @@ const Profile = () => {
         // Specifies what happens when the list is empty
         ListEmptyComponent={() => (
           <EmptyState title="No Videos Found" 
-            subtitle="No videos found for this search query"
+            subtitle="No videos found under your profile"
           />
         )}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
 
     </SafeAreaView>

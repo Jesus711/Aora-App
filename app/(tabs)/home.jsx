@@ -45,7 +45,7 @@ const Home = () => {
         data={posts}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
-          <VideoCard key={item.title + item.id} video={item} homeRefresh={refreshing} />
+          <VideoCard key={item.title + item.id} video={item} refresh={refreshing} />
         )}
         ListHeaderComponent={() => (
           // Will appear about the list as a header

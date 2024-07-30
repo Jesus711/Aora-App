@@ -6,7 +6,7 @@ import { checkSavedVideo, removeSavedVideo, saveVideo } from '../lib/appwrite'
 import { useGlobalContext } from '../context/GlobalProvider'
 import useAppwrite from '../lib/useAppwrite'
 
-const VideoCard = ({ listRefetch, homeRefresh, video: { title, thumbnail, video, $id: videoID, creator: { username, avatar }} }) => {
+const VideoCard = ({ listRefetch, refresh, video: { title, thumbnail, video, $id: videoID, creator: { username, avatar }} }) => {
 
     const [play, setPlay] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
@@ -50,7 +50,7 @@ const VideoCard = ({ listRefetch, homeRefresh, video: { title, thumbnail, video,
     // Has savedVideo list to refetch when the home page refreshes to update if any saved videos were removed from the bookmark tab
     useEffect(() => {
         refetch();
-    }, [homeRefresh])
+    }, [refresh])
 
 
 
